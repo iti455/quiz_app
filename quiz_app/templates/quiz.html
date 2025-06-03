@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f4f8;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 700px;
+            margin: 40px auto;
+            background: #ffffff;
+            padding: 30px;
+            box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        fieldset {
+            border: none;
+            margin-bottom: 20px;
+            padding: 10px 0;
+        }
+        legend {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        label {
+            display: block;
+            margin: 5px 0;
+            cursor: pointer;
+        }
+        input[type="radio"] {
+            margin-right: 10px;
+        }
+        input[type="submit"] {
+            background: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            display: block;
+            margin: 20px auto 0;
+        }
+        input[type="submit"]:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Quiz</h1>
+        <form method="POST" action="/submit" onsubmit="return validateForm();">
+            {% for question in questions %}
+                <fieldset>
+                    <legend>{{ loop.index }}. {{ question.question }}</legend>
+                    {% for option in question.options %}
+                        <label>
+                            <input type="radio" name="q{{ question.id }}" value="{{ option }}">
+                            {{ option }}
+                        </label>
+                    {% endfor %}
+                </fieldset>
+            {% endfor %}
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+
+    <script>
+        function validateForm() {
+            const totalQuestions = {{ questions|length }};
+            for (let i = 0; i < totalQuestions; i++) {
+                const radios = document.getElementsByName("q" + i);
+                let isChecked = false;
+                for (let radio of radios) {
+                    if (radio.checked) {
+                        isChecked = true;
+                        break;
+                    }
+                }
+                if (!isChecked) {
+                    alert("Please answer question " + (i + 1));
+                    return false;
+                }
+            }
+            return true;
+        }
+    </script>
+</body>
+</html>
